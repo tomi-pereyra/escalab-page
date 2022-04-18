@@ -55,6 +55,16 @@ Validaciones necesarias:
 // Desafío opcional: qué elemento y evento podríamos usar para detectar si el usuario apreta Enter en vez de hacer click?
 botonEnviar.addEventListener("click", (event) => {
     event.preventDefault();
+    revisarFormulario();
+});
+
+document.querySelector('.section-contact').addEventListener('keypress', function(e){
+    if (e.key === 'Enter') {
+        revisarFormulario();
+    }
+})
+
+function revisarFormulario() {
     cleanErrors();
     let hasErrors = false;
 
@@ -89,43 +99,4 @@ botonEnviar.addEventListener("click", (event) => {
     if(!hasErrors) {
         sendMail(sanitizedName, email.value, sanitizedPhone, topic.value, sanitizedCommit);
     }
-});
-
-document.querySelector('.section-contact').addEventListener('keypress', function(e){
-    if (e.key === 'Enter') {
-        cleanErrors();
-        let hasErrors = false;
-
-        // TODO: validar nombre y apellido acá
-        const sanitizedName = nameContact.value.trim();
-        if(sanitizedName.length === 0 || sanitizedName.indexOf(' ') < 0) {
-            showError(nameContact, "Nombre y apellido no debe estar vacío y debe contener al menos un espacio.");
-            hasErrors = true;
-        }
-
-        const mailRe = /^\w+@\w+\.\w{2,7}$/;
-        if (!mailRe.exec(email.value)) {
-            showError(email, "El correo debe seguir un formato válido.");
-            hasErrors = true;
-        }
-
-        const phoneRe = /^\+?\d{7,15}$/;
-        const sanitizedPhone = phone.value.replace(" ", "");
-        if (!phoneRe.exec(sanitizedPhone)) {
-            showError(phone, "Número de teléfono debe tener entre 7 y 15 dígitos.");
-            hasErrors = true;
-        }
-
-        // TODO: Validar comentario acá
-        const sanitizedCommit = commit.value.trim();
-        if(sanitizedCommit.length < 20) {
-            showError(commit, "El comentario debe tener al menos 20 caracteres");
-            hasErrors = true;
-        }
-
-        // TODO: Enviar consulta a API en caso de que el formulario esté correcto
-        if(!hasErrors) {
-            sendMail(sanitizedName, email.value, sanitizedPhone, topic.value, sanitizedCommit);
-        }
-    }
-})
+}
